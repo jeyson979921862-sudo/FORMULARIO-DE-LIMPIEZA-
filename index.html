@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrega de Artículos de Limpieza</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --g800: #085041; --g600: #0F6E56; --g500: #1D9E75; --g300: #5DCAA5; --g50: #E1F5EE;
+      --n900: #1a1a1a; --n700: #3a3a3a; --n500: #6b6b6b; --n300: #c4c4c4; --n100: #efefed; --n50: #f8f8f6;
+      --red: #E24B4A; --white: #ffffff;
+      --font: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
+      --r: 10px; --rl: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: #f2f5f1; color: var(--n900); min-height: 100vh; }
+    header { background: var(--g800); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(8,80,65,0.3); }
+    .hdr { max-width: 700px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .hdr-left { display: flex; align-items: center; gap: 10px; }
+    .hdr-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .hdr-title { font-size: 14px; font-weight: 500; color: #fff; }
+    .hdr-sub { font-size: 11px; color: rgba(255,255,255,0.6); }
+    .hdr-date { font-family: var(--mono); font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 3px 10px; color: rgba(255,255,255,0.8); white-space: nowrap; }
+    @media(max-width:480px){ .hdr-date { display:none; } }
+    main { max-width: 700px; margin: 0 auto; padding: 24px 16px 80px; }
+    .hero { background: var(--g500); border-radius: var(--rl); padding: 24px 24px 20px; margin-bottom: 16px; position: relative; overflow: hidden; animation: up .45s ease both; }
+    .hero::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.07); }
+    .hero-title { font-size: 19px; font-weight: 600; color:#fff; margin-bottom:6px; position:relative; }
+    .hero-meta { font-size: 13px; color: rgba(255,255,255,0.8); line-height:1.5; position:relative; }
+    .hero-meta strong { color:#fff; }
+    .semana-row { display:flex; align-items:center; gap:8px; margin-top:12px; position:relative; }
+    .semana-row label { font-size:13px; color:rgba(255,255,255,0.75); }
+    .semana-inp { font-family:var(--mono); font-size:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:6px; padding:5px 11px; color:#fff; outline:none; transition: border-color .2s, background .2s; }
+    .semana-inp::placeholder { color:rgba(255,255,255,0.4); }
+    .semana-inp:focus { border-color:rgba(255,255,255,0.7); background:rgba(255,255,255,0.22); }
+    .card { background: var(--white); border-radius: var(--rl); border: 1px solid rgba(0,0,0,0.07); padding: 20px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); animation: up .45s ease both; }
+    .card:nth-child(2){ animation-delay:.06s; } .card:nth-child(3){ animation-delay:.12s; } .card:nth-child(4){ animation-delay:.18s; }
+    .card-hdr { display:flex; align-items:center; gap:10px; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--n100); }
+    .card-icon { width:30px; height:30px; border-radius:8px; background:var(--g50); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+    .card-title { font-size:14px; font-weight:600; color:var(--n900); }
+    .card-sub { font-size:12px; color:var(--n500); margin-top:1px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:520px){ .grid2 { grid-template-columns:1fr; } }
+    .full { grid-column: 1 / -1; }
+    .field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+    .field:last-child { margin-bottom:0; }
+    .lbl { font-size:13px; font-weight:500; color:var(--n700); display:flex; align-items:center; gap:4px; }
+    .req { color:var(--red); font-size:14px; line-height:1; }
+    .inp { font-family:var(--font); font-size:14px; color:var(--n900); background:var(--n50); border:1.5px solid var(--n100); border-radius:var(--r); padding:10px 13px; outline:none; width:100%; transition: border-color .15s, background .15s, box-shadow .15s; }
+    .inp:hover { border-color:var(--n300); background:#fff; }
+    .inp:focus { border-color:var(--g500); background:#fff; box-shadow:0 0 0 3px rgba(29,158,117,0.1); }
+    .inp.err { border-color:var(--red)!important; box-shadow:0 0 0 3px rgba(226,75,74,0.1)!important; }
+    textarea.inp { resize:vertical; min-height:80px; line-height:1.6; }
+    .art-list { display:flex; flex-direction:column; gap:7px; }
+    .art-row { display:flex; align-items:center; gap:12px; background:var(--n50); border:1px solid var(--n100); border-radius:var(--r); padding:11px 13px; transition: border-color .15s, background .15s; }
+    .art-row:focus-within { border-color:var(--g500); background:#fff; box-shadow:0 0 0 2px rgba(29,158,117,0.08); }
+    .art-name { flex:1; font-size:14px; color:var(--n700); line-height:1.3; }
+    .qty-wrap { display:flex; align-items:center; flex-shrink:0; }
+    .qty-btn { width:34px; height:34px; border:1px solid var(--n300); background:var(--white); color:var(--n700); font-size:19px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .1s; touch-action:manipulation; user-select:none; -webkit-user-select:none; }
+    .qty-btn:first-child { border-radius:8px 0 0 8px; border-right:none; }
+    .qty-btn:last-child { border-radius:0 8px 8px 0; border-left:none; }
+    .qty-btn:active { background:var(--g50); color:var(--g600); }
+    .qty-num { width:46px; height:34px; font-family:var(--mono); font-size:14px; font-weight:500; text-align:center; border:1px solid var(--n300); border-radius:0; background:var(--white); color:var(--n900); outline:none; -moz-appearance:textfield; }
+    .qty-num::-webkit-inner-spin-button, .qty-num::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .qty-num:focus { border-color:var(--g500); }
+    .qty-num.on { border-color:var(--g500); background:var(--g50); color:#085041; }
+    .otros-box { background:var(--n50); border:1px solid var(--n100); border-radius:var(--r); padding:13px; margin-top:7px; transition: border-color .15s, background .15s; }
+    .otros-box:focus-within { border-color:var(--g500); background:#fff; box-shadow:0 0 0 2px rgba(29,158,117,0.08); }
+    .otros-lbl { font-size:13px; font-weight:500; color:var(--n700); margin-bottom:7px; }
+    .otros-txt { font-family:var(--font); font-size:14px; color:var(--n900); background:transparent; border:none; outline:none; width:100%; resize:none; min-height:64px; line-height:1.5; }
+    .resumen { display:flex; align-items:center; justify-content:space-around; background:var(--n50); border:1px solid var(--n100); border-radius:var(--r); padding:14px 16px; margin-top:14px; gap:8px; flex-wrap:wrap; }
+    .res-num { font-family:var(--mono); font-size:22px; font-weight:500; color:var(--g600); }
+    .res-lbl { font-size:11px; color:var(--n500); margin-top:1px; text-align:center; }
+    .btn-submit { width:100%; padding:14px; margin-top:20px; background:var(--g500); color:#fff; border:none; border-radius:var(--r); font-family:var(--font); font-size:15px; font-weight:600; cursor:pointer; transition: background .15s, transform .1s; box-shadow: 0 4px 16px rgba(29,158,117,0.25); }
+    .btn-submit:hover { background:var(--g600); }
+    .btn-submit:active { transform:scale(0.99); }
+    .btn-submit:disabled { background:var(--n300); box-shadow:none; cursor:not-allowed; }
+    #success { display:none; text-align:center; padding:60px 20px; animation: up .4s ease both; }
+    .ok-circle { width:70px; height:70px; border-radius:50%; background:var(--g50); margin:0 auto 18px; display:flex; align-items:center; justify-content:center; font-size:30px; }
+    .ok-title { font-size:20px; font-weight:600; color:#085041; margin-bottom:8px; }
+    .ok-sub { font-size:14px; color:var(--n500); margin-bottom:24px; }
+    .btn-otra { padding:11px 28px; background:transparent; border:1.5px solid var(--g500); border-radius:var(--r); font-family:var(--font); font-size:14px; font-weight:500; color:var(--g600); cursor:pointer; transition:background .15s; }
+    .btn-otra:hover { background:var(--g50); }
+    footer { text-align:center; padding:18px; font-family:var(--mono); font-size:11px; color:var(--n300); }
+    @keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-icon">🧹</div>
+      <div>
+        <div class="hdr-title">Control de Almacén</div>
+        <div class="hdr-sub">Área de Logística</div>
+      </div>
+    </div>
+    <div class="hdr-date" id="hdrFecha"></div>
+  </div>
+</header>
+
+<main>
+  <div id="formWrap">
+    <div class="hero">
+      <div class="hero-title">Formulario de entrega de artículos de limpieza</div>
+      <div class="hero-meta">Supervisadora: <strong>Diana Gabriela Díaz Pandia</strong> · Logística</div>
+      <div class="semana-row">
+        <label for="semana">Semana:</label>
+        <input class="semana-inp" type="text" id="semana" placeholder="ej. semana 13 / 2026">
+      </div>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-icon">📋</div>
+          <div><div class="card-title">Datos generales</div><div class="card-sub">Información del solicitante</div></div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="lbl" for="fecha">Fecha <span class="req">*</span></label>
+            <input class="inp" type="date" id="fecha" required>
+          </div>
+          <div class="field">
+            <label class="lbl" for="proyecto">Proyecto <span class="req">*</span></label>
+            <input class="inp" type="text" id="proyecto" placeholder="Nombre del proyecto" required>
+          </div>
+          <div class="field full">
+            <label class="lbl" for="nombres">Nombres y apellidos <span class="req">*</span></label>
+            <input class="inp" type="text" id="nombres" placeholder="Nombre completo" required>
+          </div>
+          <div class="field full">
+            <label class="lbl" for="firma">Firma <span style="font-size:12px;color:var(--n500);font-weight:400;">(nombre como confirmación)</span></label>
+            <input class="inp" type="text" id="firma" placeholder="Escriba su nombre a modo de firma">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-icon">📦</div>
+          <div><div class="card-title">Artículos entregados</div><div class="card-sub">Ingrese la cantidad retirada (0 si no aplica)</div></div>
+        </div>
+        <div class="art-list">
+          <div class="art-row"><span class="art-name">Papel higiénico</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q0',-1)">−</button><input type="number" class="qty-num" id="q0" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q0',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Papel toalla</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q1',-1)">−</button><input type="number" class="qty-num" id="q1" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q1',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Papel higiénico jumbo</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q2',-1)">−</button><input type="number" class="qty-num" id="q2" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q2',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Papel toalla jumbo</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q3',-1)">−</button><input type="number" class="qty-num" id="q3" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q3',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Jabón líquido</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q4',-1)">−</button><input type="number" class="qty-num" id="q4" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q4',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Lejía</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q5',-1)">−</button><input type="number" class="qty-num" id="q5" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q5',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Ambientador</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q6',-1)">−</button><input type="number" class="qty-num" id="q6" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q6',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Bolsas de basura</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q7',-1)">−</button><input type="number" class="qty-num" id="q7" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q7',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Guantes látex</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q8',-1)">−</button><input type="number" class="qty-num" id="q8" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q8',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Escoba</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q9',-1)">−</button><input type="number" class="qty-num" id="q9" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q9',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Recogedor</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q10',-1)">−</button><input type="number" class="qty-num" id="q10" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q10',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Trapeador</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q11',-1)">−</button><input type="number" class="qty-num" id="q11" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q11',1)">+</button></div></div>
+          <div class="art-row"><span class="art-name">Desinfectante</span><div class="qty-wrap"><button type="button" class="qty-btn" onclick="chg('q12',-1)">−</button><input type="number" class="qty-num" id="q12" min="0" value="0" inputmode="numeric"><button type="button" class="qty-btn" onclick="chg('q12',1)">+</button></div></div>
+          <div class="otros-box">
+            <div class="otros-lbl">Otros artículos</div>
+            <textarea class="otros-txt" id="otros" placeholder="Describa otros artículos entregados y sus cantidades..."></textarea>
+          </div>
+        </div>
+        <div class="resumen">
+          <div><div class="res-num" id="rTipos">0</div><div class="res-lbl">tipos de artículos</div></div>
+          <div><div class="res-num" id="rTotal">0</div><div class="res-lbl">unidades totales</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-icon">🗒️</div>
+          <div><div class="card-title">Observaciones</div><div class="card-sub">Campo opcional</div></div>
+        </div>
+        <textarea class="inp" id="obs" placeholder="Anote detalles adicionales sobre la entrega..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnEnviar">Registrar entrega</button>
+    </form>
+  </div>
+
+  <div id="success">
+    <div class="ok-circle">✅</div>
+    <div class="ok-title">¡Entrega registrada!</div>
+    <div class="ok-sub">Los datos se guardaron en tu Google Sheets.<br>Puedes revisarlos desde cualquier dispositivo.</div>
+    <button class="btn-otra" onclick="resetForm()">Registrar otra entrega</button>
+  </div>
+</main>
+
+<footer>Sistema de control de almacén · Logística · Diana Gabriela Díaz Pandia</footer>
+
+<script>
+  const SHEETS_URL = "https://script.google.com/macros/s/AKfycbw--QIEapxdWGJlj7sXsP8M5UH2eZ9Dn5hUD6Fqzv9QlhbmX0c3DC_PwZkPHiNuRk9UtQ/exec";
+  const IDS = ["q0","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10","q11","q12"];
+
+  const now = new Date();
+  document.getElementById("hdrFecha").textContent =
+    now.toLocaleDateString("es-PE", { weekday:"short", day:"numeric", month:"short", year:"numeric" });
+  const hoy = now.toISOString().split("T")[0];
+  document.getElementById("fecha").value = hoy;
+
+  function chg(id, d) {
+    const el = document.getElementById(id);
+    const v = Math.max(0, (parseInt(el.value)||0) + d);
+    el.value = v;
+    el.classList.toggle("on", v > 0);
+    resumen();
+  }
+
+  IDS.forEach(id => {
+    document.getElementById(id).addEventListener("input", function() {
+      const v = parseInt(this.value)||0;
+      if (v < 0) this.value = 0;
+      this.classList.toggle("on", v > 0);
+      resumen();
+    });
+  });
+
+  function resumen() {
+    let tipos = 0, total = 0;
+    IDS.forEach(id => {
+      const v = parseInt(document.getElementById(id).value)||0;
+      if (v > 0) { tipos++; total += v; }
+    });
+    document.getElementById("rTipos").textContent = tipos;
+    document.getElementById("rTotal").textContent = total;
+  }
+
+  document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const fecha   = document.getElementById("fecha").value;
+    const nombres = document.getElementById("nombres").value.trim();
+    const proyecto= document.getElementById("proyecto").value.trim();
+    let ok = true;
+    [["fecha",fecha],["nombres",nombres],["proyecto",proyecto]].forEach(([id,val]) => {
+      const el = document.getElementById(id);
+      if (!val) { el.classList.add("err"); ok = false; }
+      else el.classList.remove("err");
+    });
+    if (!ok) { document.querySelector(".inp.err").focus(); return; }
+
+    const btn = document.getElementById("btnEnviar");
+    btn.disabled = true;
+    btn.textContent = "Enviando...";
+
+    const semana = document.getElementById("semana").value.trim() || "—";
+    const firma  = document.getElementById("firma").value.trim()  || "—";
+    const obs    = document.getElementById("obs").value.trim()    || "—";
+    const otros  = document.getElementById("otros").value.trim()  || "—";
+    const total  = parseInt(document.getElementById("rTotal").textContent)||0;
+
+    const payload = { fecha, semana, nombres, proyecto, firma, obs, otros, total };
+    IDS.forEach(id => { payload[id] = parseInt(document.getElementById(id).value)||0; });
+
+    fetch(SHEETS_URL, {
+      method: "POST", mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      document.getElementById("formWrap").style.display = "none";
+      document.getElementById("success").style.display  = "block";
+      window.scrollTo({ top:0, behavior:"smooth" });
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = "Registrar entrega";
+      alert("No se pudo conectar con Google Sheets.\nVerifica tu conexión a internet.");
+    });
+  });
+
+  function resetForm() {
+    document.getElementById("form").reset();
+    document.getElementById("fecha").value = hoy;
+    IDS.forEach(id => { const el = document.getElementById(id); el.value = 0; el.classList.remove("on"); });
+    resumen();
+    const btn = document.getElementById("btnEnviar");
+    btn.disabled = false;
+    btn.textContent = "Registrar entrega";
+    document.getElementById("success").style.display  = "none";
+    document.getElementById("formWrap").style.display = "block";
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+</script>
+</body>
+</html>
